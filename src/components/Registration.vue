@@ -1,44 +1,29 @@
-<template>
-  <section class="max-w-sm text-center">
-    <p>Зареєструватися через</p>
-    <div class="flex flex-grow">
-      <button><img src="" alt="" />Google</button>
-      <button><img src="" alt="" />Facebook</button>
-      <button><img src="" alt="" />Apple Id</button>
-    </div>
-
-    <p>або</p>
-    <form @submit.prevent="register">
-      <label for="user">Ви</label><br />
-      <select name="" id="">
-        <option value="">Юр особа</option>
-        <option value="">Покупець</option></select
-      ><br />
-      <label for="username">Ім'я користувача:</label>
-      <input type="text" id="username" v-model="username" required />
-      <br />
-      <label for="password">Пароль:</label><br />
-      <input type="password" id="password" v-model="password" required />
-      <br />
-      <button class="submit" type="submit">Зареєструватися</button>
-    </form>
-  </section>
-</template>
-
 <script>
 import axios from "axios";
-
+import AuthButtonsVue from "./AuthButtons.vue";
 export default {
+  components: {
+    AuthButtonsVue,
+  },
   data() {
     return {
       username: "",
       password: "",
+      email: "",
+      company: "",
+      user: 0,
     };
   },
   methods: {
+    toggleUser() {
+      if (this.user == 0) {
+        ++this.user;
+        console.log(this.user);
+      } else --this.user;
+    },
     async register() {
       try {
-        console.log(this.username);
+        console.log(this.username, this.password, this.email);
         if (!this.username || !this.password) {
           this.error = "Будь ласка, заповніть всі поля.";
           return;
@@ -58,6 +43,43 @@ export default {
   },
 };
 </script>
+<template>
+  <section class="max-w-sm text-center">
+    <AuthButtonsVue />
+    <p>Sign up with</p>
+    <div class="flex flex-grow">
+      <button><img src="" alt="" />Google</button>
+      <button><img src="" alt="" />Facebook</button>
+      <button><img src="" alt="" />Apple Id</button>
+    </div>
+
+    <p>or</p>
+    <form @submit.prevent="register">
+      <label for="user">You</label><br />
+      <select @change="toggleUser" name="" id="">
+        <option value="farmer">Legal entity</option>
+        <option value="buyer">Private person</option></select
+      ><br />
+      <label for="username">Username:</label>
+      <input type="text" id="username" v-model="username" required />
+
+      <div v-if="this.user == 0">
+        <label>Company name:</label>
+        <br />
+        <input type="text" v-model="company" />
+      </div>
+
+      <label for="email">Email:</label><br />
+      <input type="email" id="email" v-model="email" required />
+      <label for="password">Password:</label><br />
+      <input type="password" id="password" v-model="password" required />
+      <br />
+      <button class="submit" type="submit">Sign up</button>
+    </form>
+  </section>
+</template>
+
+
 
 
 <style scoped>
@@ -76,10 +98,10 @@ section {
   padding: 20px;
   border-radius: 4px;
 }
-div {
+/* div {
   display: flex;
-  justify-content: space-between;
-}
+  justify-content: space-around;
+} */
 input,
 select {
   background: #ebe6e6;
