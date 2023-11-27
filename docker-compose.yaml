@@ -1,0 +1,38 @@
+version: '3.4'
+
+#x-project-name: myproject
+
+networks:
+  backend:
+
+
+services:
+  agroforumDb:
+    container_name: AgroforumDb
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=AgroforumDb
+    ports:
+      - 8082:5432
+    networks:
+      - backend
+    volumes:
+      - agroforumData:/var/lib/postgresql/data
+  agroforum.webapi:
+    container_name: AgroforumWebApi
+    image: fermer/agroforumwebapi:1.1
+    ports:
+      - 8081:80
+    environment:
+      - DB_HOST=agroforumDb
+      - DB_NAME=AgroforumDb
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    networks:
+      - backend
+    depends_on:
+      - agroforumDb
+volumes:
+  agroforumData:
